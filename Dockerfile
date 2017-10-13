@@ -22,6 +22,7 @@ RUN curl -sSL https://get.rvm.io | bash -s stable
 RUN source ~/.rvm/scripts/rvm
 RUN rvm install 2.4.2
 RUN rvm use 2.4.2 --default
+
 RUN gem install wordmove
 
 RUN docker-php-ext-install soap
