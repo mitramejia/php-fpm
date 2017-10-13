@@ -1,5 +1,7 @@
 FROM johnpbloch/phpfpm:7.0
 
+RUN echo "deb http://archive.ubuntu.com/ubuntu raring main universe" > /etc/apt/sources.list
+
 RUN curl -L https://phar.phpunit.de/phpunit.phar > /tmp/phpunit.phar \
 	&& chmod +x /tmp/phpunit.phar \
 	&& mv /tmp/phpunit.phar /usr/local/bin/phpunit
@@ -17,13 +19,12 @@ RUN apt-get update && apt-get install -y \
 	bison \
 	libffi-dev 
 
-RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-RUN curl -sSL https://get.rvm.io | bash -s stable
-RUN source ~/.rvm/scripts/rvm
-RUN rvm install 2.4.2
-RUN rvm use 2.4.2 --default
-
-RUN gem install wordmove
+# install RVM, Ruby, and Bundler
+RUN \curl -L https://get.rvm.io | bash -s stable
+RUN /bin/bash -l -c "rvm requirements"
+RUN /bin/bash -l -c "rvm install 2.4"
+RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
+RUN /bin/bash -l -c "gem install wordmove"
 
 RUN docker-php-ext-install soap
 RUN echo "mailhub=mailcatcher:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf
